@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Currency;
 import java.util.List;
 
 @Entity
@@ -20,11 +19,11 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "title", nullable = false, unique = true)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "amount", nullable = false)
-    private Currency amount;
+    private double amount;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_entity_id")

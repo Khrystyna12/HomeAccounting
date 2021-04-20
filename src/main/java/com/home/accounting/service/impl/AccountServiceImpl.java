@@ -6,6 +6,7 @@ import com.home.accounting.service.AccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account readById(long id) {
         Optional<Account> optional = accountRepository.findById(id);
+        if (optional.isPresent()) {
             return optional.get();
+        }
+        throw new EntityNotFoundException("Account with id " + id + " not found");
+    }
+
+    @Override
+    public List<Account> getByUserEmail(String email) {
+        List<Account> accounts = accountRepository.getByUserEmail(email);
+        return accounts.isEmpty() ? new ArrayList<>() : accounts;
     }
 
     @Override

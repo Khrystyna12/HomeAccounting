@@ -1,9 +1,6 @@
 package com.home.accounting.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,20 +10,24 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@RequiredArgsConstructor
 @ToString
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "title", nullable = false, unique = true)
+    @Column(name = "title", nullable = false)
+    @NonNull
     private String title;
 
     @Column(name = "ofExpense", nullable = false)
+    @NonNull
     private boolean ofExpense;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_entity_id")
+    @NonNull
     private User user;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
