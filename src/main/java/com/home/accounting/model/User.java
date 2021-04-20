@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class User {
 
     //    @Pattern(regexp = "(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}",
 //            message = "Must be minimum 6 characters, at least one letter and one number")
+    @NotBlank(message = "Must be minimum 1 character")
     @Column(name = "password", nullable = false)
     private String password;
 
