@@ -3,7 +3,6 @@ package com.home.accounting.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -15,7 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
