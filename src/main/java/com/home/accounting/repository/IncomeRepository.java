@@ -12,6 +12,6 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
     @Query(value = "select income.id, income.amount, comment, date, account_id, category_id, subcategory_id " +
             "from income inner join account on account_id = account.id " +
             "inner join user_entity on account.user_entity_id = user_entity.id " +
-            "where email = ?1", nativeQuery = true)
+            "where email = ?1 order by date", nativeQuery = true)
     List<Income> findAllByUserEmail(String email);
 }
