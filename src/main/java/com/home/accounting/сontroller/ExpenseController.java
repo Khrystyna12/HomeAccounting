@@ -1,12 +1,12 @@
 package com.home.accounting.сontroller;
 
-import com.home.accounting.dto.IncomeDto;
-import com.home.accounting.dto.IncomeTransformer;
+import com.home.accounting.dto.ExpenseDto;
+import com.home.accounting.dto.ExpenseTransformer;
 import com.home.accounting.model.Account;
-import com.home.accounting.model.Income;
+import com.home.accounting.model.Expense;
 import com.home.accounting.service.AccountService;
 import com.home.accounting.service.CategoryService;
-import com.home.accounting.service.IncomeService;
+import com.home.accounting.service.ExpenseService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,49 +21,49 @@ import java.security.Principal;
 import java.text.DecimalFormat;
 
 @Controller
-@RequestMapping("/incomes")
+@RequestMapping("/expenses")
 @AllArgsConstructor
-public class IncomeController {
-    private final IncomeService incomeService;
+public class ExpenseController {
+    private final ExpenseService expenseService;
     private final AccountService accountService;
     private final CategoryService categoryService;
 
     @GetMapping("/create")
     public String create(Model model, Principal principal) {
-        model.addAttribute("income", new IncomeDto());
+        model.addAttribute("expense", new ExpenseDto());
         model.addAttribute("accounts", accountService.getByUserEmail(principal.getName()));
-        model.addAttribute("categories", categoryService.getCategoriesOfIncomeByUserEmail(principal.getName()));
-        return "create-income";
+        model.addAttribute("categories", categoryService.getCategoriesOfExpenseByUserEmail(principal.getName()));
+        return "create-expense";
     }
 
     @PostMapping("/create")
-    public String create(@Validated @ModelAttribute("income") IncomeDto incomeDto, BindingResult result,
+    public String create(@Validated @ModelAttribute("expense") ExpenseDto expenseDto, BindingResult result,
                          Model model, Principal principal) {
         if (result.hasErrors()) {
             model.addAttribute("accounts", accountService.getByUserEmail(principal.getName()));
-            model.addAttribute("categories", categoryService.getCategoriesOfIncomeByUserEmail(principal.getName()));
-            return "create-income";
+            model.addAttribute("categories", categoryService.getCategoriesOfExpenseByUserEmail(principal.getName()));
+            return "create-expense";
         }
-        Income income = (new IncomeTransformer(accountService, categoryService)).convertToEntity(incomeDto);
-        //check if amount of income is not 0
-        Account accountOfIncome = income.getAccount();
-        if (income.getAmount() == 0) {
+        Expense expense = (new ExpenseTransformer(accountService, categoryService)).convertToEntity(expenseDto);
+        //check if amount of expense is not 0 or more that amount of account
+        Account accountOfExpense = expense.getAccount();
+        if (expense.getAmount() == 0 || accountOfExpense.getAmount() < expense.getAmount()) {
             model.addAttribute("accounts", accountService.getByUserEmail(principal.getName()));
-            model.addAttribute("categories", categoryService.getCategoriesOfIncomeByUserEmail(principal.getName()));
-            return "redirect:/incomes/create?error";
+            model.addAttribute("categories", categoryService.getCategoriesOfExpenseByUserEmail(principal.getName()));
+            return "redirect:/expenses/create?error";
         }
-        incomeService.create(income);
+        expenseService.create(expense);
         //update amount of account
-        accountOfIncome.setAmount(accountOfIncome.getAmount() + income.getAmount());
-        accountService.update(accountOfIncome);
-        return "redirect:/incomes/all";
+        accountOfExpense.setAmount(accountOfExpense.getAmount() - expense.getAmount());
+        accountService.update(accountOfExpense);
+        return "redirect:/expenses/all";
     }
 
     @GetMapping("/all")
     public String getAll(Model model, Principal principal) {
         DecimalFormat decimalFormat = new DecimalFormat("##0.00 UAH");
-        model.addAttribute("incomes", incomeService.getByUserEmail(principal.getName()));
+        model.addAttribute("expenses", expenseService.getByUserEmail(principal.getName()));
         model.addAttribute("decimalFormat", decimalFormat);
-        return "incomes-list";
+        return "expenses-list";
     }
 }

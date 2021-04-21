@@ -3,28 +3,24 @@ package com.home.accounting.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Currency;
 
 @Entity
 @Table(name = "Expense")
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "date", nullable = false)
-    private LocalDate date;
+    private String date;
 
     @Column(name = "amount", nullable = false)
-    private Currency amount;
+    private double amount;
 
     @Column(name = "comment")
     private String comment;
