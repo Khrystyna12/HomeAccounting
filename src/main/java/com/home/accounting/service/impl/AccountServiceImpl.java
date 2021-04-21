@@ -35,6 +35,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Account update(Account account) {
+        if (account != null) {
+            Account oldAccount = readById(account.getId());
+            if (oldAccount != null) {
+                return accountRepository.save(account);
+            }
+        }
+        throw new RuntimeException("Account cannot be 'null'");
+    }
+
+    @Override
     public List<Account> getByUserEmail(String email) {
         List<Account> accounts = accountRepository.getByUserEmail(email);
         return accounts.isEmpty() ? new ArrayList<>() : accounts;

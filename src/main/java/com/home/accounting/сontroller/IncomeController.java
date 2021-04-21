@@ -2,6 +2,7 @@ package com.home.accounting.сontroller;
 
 import com.home.accounting.dto.IncomeDto;
 import com.home.accounting.dto.IncomeTransformer;
+import com.home.accounting.model.Account;
 import com.home.accounting.model.Income;
 import com.home.accounting.service.AccountService;
 import com.home.accounting.service.CategoryService;
@@ -45,6 +46,10 @@ public class IncomeController {
         }
         Income income = (new IncomeTransformer(accountService, categoryService)).convertToEntity(incomeDto);
         incomeService.create(income);
+        //update amount of account
+        Account accountOfIncome = income.getAccount();
+        accountOfIncome.setAmount(accountOfIncome.getAmount() + income.getAmount());
+        accountService.update(accountOfIncome);
         return "redirect:/incomes/all";
     }
 
